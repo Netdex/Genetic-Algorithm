@@ -1,7 +1,5 @@
 #include "stdafx.h"
 #include "Population.h"
-#include <vector>
-#include <cstdlib>
 
 const double Population::CROSSOVER_CHANCE = 0.7;
 const double Population::MUTATION_CHANCE = 0.007;
@@ -11,24 +9,24 @@ std::vector<Genotype> pop;
 
 Population::Population()
 {
-	
+	generation = 0;
 }
 
 Population::~Population()
 {
-	
+
 }
 
 void Population::populate(int amt)
 {
 	pop.clear();
-	pop.resize(amt);
 	for (int gtype = 0; gtype < amt; gtype++)
 	{
 		Genotype g;
 		g.populate();
 		pop.push_back(g);
 	}
+	evalFitness();
 }
 
 void Population::nextPopulation(int newSize)
@@ -56,23 +54,38 @@ void Population::nextPopulation(int newSize)
 	pop = next;
 	delete[] prop;
 	evalFitness();
+	generation++;
 }
 
 void Population::evalFitness()
-{
-	for (int i = 0; i < pop.size(); i++)
+{	
+	for (int gtype = 0; gtype < pop.size(); gtype++)
 	{
-		pop[i].fitness = 1;
+		Genotype g = pop[gtype];
+		int sum = 0;
+		for (int b = 0; b < Genotype::CHROMOSOME_SIZE; b++)
+			sum += g.chromosome[b];
+		pop[gtype].fitness = sum;
 	}
 }
 
-int Population::roulette(double* prop, int populationSize, double totalFitness)
+int Population::roulette(double*& prop, int populationSize, double totalFitness)
 {
 	double rnd = (double) rand() / (RAND_MAX + 1);
 	for (int j = 0; j < populationSize; j++)
 		if (rnd < prop[j])
 			return j;
 	return populationSize - 1;
+}
+
+std::string Population::to_string()
+{
+	std::string ret = "//:: generation: " + std::to_string(generation) + std::string("\n");
+	for (int gtype = 0; gtype < pop.size(); gtype++)
+	{
+		ret += pop[gtype].to_string() + '\n';
+	}
+	return ret;
 }
 
 double Population::getTotalFitness()
@@ -86,4 +99,36 @@ double Population::getTotalFitness()
 double Population::getAvgFitness()
 {
 	return getTotalFitness() / pop.size();
+}
+
+double Population::getMaxFitnessIndex()
+{
+	int idx = 0;
+	for (int i = 1; i < pop.size(); i++)
+	{
+		if (pop[i].fitness > pop[idx].fitness)
+			idx = i;
+	}
+	return idx;
+}
+
+double Population::getMaxFitness()
+{
+	return pop[getMaxFitnessIndex()].fitness;
+}
+
+double Population::getMinFitnessIndex()
+{
+	int idx = 0;
+	for (int i = 1; i < pop.size(); i++)
+	{
+		if (pop[i].fitness < pop[idx].fitness)
+			idx = i;
+	}
+	return idx;
+}
+
+double Population::getMinFitness()
+{
+	return pop[getMinFitnessIndex()].fitness;
 }
