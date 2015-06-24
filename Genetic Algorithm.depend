@@ -1,0 +1,28 @@
+# depslib dependency file v1.0
+1435109516 source:d:\programming\c++\genetic algorithm\genetic algorithm.cpp
+	"Genotype.h"
+	<time.h>
+	"Population.h"
+	<string>
+	<iostream>
+
+1435105582 d:\programming\c++\genetic algorithm\genotype.h
+	<string>
+	<bitset>
+	<cstdlib>
+	<cstdio>
+
+1435017230 d:\programming\c++\genetic algorithm\population.h
+	<vector>
+	"Genotype.h"
+	<string>
+	<cstdlib>
+
+1435107962 source:d:\programming\c++\genetic algorithm\genotype.cpp
+	"Genotype.h"
+
+1435107797 source:d:\programming\c++\genetic algorithm\population.cpp
+	"Population.h"
+	<windows.h>
+	<iostream>
+
